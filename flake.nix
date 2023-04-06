@@ -20,7 +20,7 @@
         ];
       };
 
-      packages.x86_64-linux.default = pkgs.resholve.writeScript "name" {
+      packages.x86_64-linux.default = pkgs.resholve.writeScriptBin "print-asset-label" {
         inputs = with pkgs; [
           curl
           jq
