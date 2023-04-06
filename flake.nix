@@ -20,18 +20,21 @@
         ];
       };
 
-      packages.x86_64-linux.default = pkgs.resholve.writeScriptBin "print-asset-label" {
-        inputs = with pkgs; [
-          curl
-          jq
-          coreutils
-          qrcode
-          imagemagick
-          python3.pkgs.brother-ql
-        ];
-        interpreter = "${pkgs.bash}/bin/bash";
-        execer = [ "cannot:${pkgs.python3.pkgs.brother-ql}/bin/brother_ql" ];
-      } (builtins.replaceStrings [ "logo-v2.svg" ] [ "${./logo-v2.svg}" ]
-        (builtins.readFile ./make.sh));
+      packages.x86_64-linux.default =
+        pkgs.resholve.writeScriptBin "print-asset-label" {
+          inputs = with pkgs; [
+            curl
+            jq
+            coreutils
+            qrcode
+            imagemagick
+            python3.pkgs.brother-ql
+          ];
+          interpreter = "${pkgs.bash}/bin/bash";
+          execer = [ "cannot:${pkgs.python3.pkgs.brother-ql}/bin/brother_ql" ];
+        } (builtins.replaceStrings [ "logo-v2.svg" "FreeMono" ] [
+          "${./logo-v2.svg}"
+          "${pkgs.freefont_ttf}/share/fonts/truetype/FreeMono.ttf"
+        ] (builtins.readFile ./make.sh));
     };
 }
