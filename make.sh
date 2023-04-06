@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -eu
 set -o pipefail
@@ -22,7 +22,7 @@ logo=$(realpath logo-v2.svg)
 		exit 1
 	fi
 
-	title=$(curl --fail 'https://api.notion.com/v1/pages/'"$device_id" \
+	title=$(curl --silent --fail 'https://api.notion.com/v1/pages/'"$device_id" \
 		-H 'Notion-Version: 2022-06-28' \
 		-H 'Authorization: Bearer '"$NOTION_API_KEY"'' |
 		jq -r '.properties.Name.title[0].plain_text')
