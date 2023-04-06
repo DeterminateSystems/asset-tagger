@@ -20,21 +20,48 @@
         ];
       };
 
-      packages.x86_64-linux.default =
-        pkgs.resholve.writeScriptBin "print-asset-label" {
-          inputs = with pkgs; [
-            curl
-            jq
-            coreutils
-            qrcode
-            imagemagick
-            python3.pkgs.brother-ql
-          ];
-          interpreter = "${pkgs.bash}/bin/bash";
-          execer = [ "cannot:${pkgs.python3.pkgs.brother-ql}/bin/brother_ql" ];
-        } (builtins.replaceStrings [ "logo-v2.svg" "FreeMono" ] [
-          "${./logo-v2.svg}"
-          "${pkgs.freefont_ttf}/share/fonts/truetype/FreeMono.ttf"
-        ] (builtins.readFile ./make.sh));
+      packages.x86_64-linux.default = pkgs.resholve.mkDerivation
+        {
+          pname = "asset-label-printer";
+          version = "main";
+
+          src = ./.;
+
+          dontConfigure = true;
+          dontBuild = true;
+
+          patchPhase = ''
+            substituteInPlace \
+              ./*.sh \
+              --replace "logo-v2.svg" "${./logo-v2.svg}" \
+              --replace "FreeMono" "${pkgs.freefont_ttf}/share/fonts/truetype/FreeMono.ttf" \
+              --replace "./make.sh" "asset-label-print"
+          '';
+
+          installPhase = ''
+            install -D make.sh $out/bin/asset-label-print
+            install -D print-all.sh $out/bin/asset-labels-print-queued
+          '';
+
+          solutions = {
+            default = {
+              scripts = [ "bin/asset-labels-print-queued" "bin/asset-label-print" ];
+              inputs = with pkgs;
+                [
+                  curl
+                  jq
+                  coreutils
+                  qrcode
+                  imagemagick
+                  python3.pkgs.brother-ql
+                ];
+              fix = {
+                "asset-label-print" = [ "${placeholder "out"}/bin/asset-label-print" ];
+              };
+              interpreter = "${pkgs.bash}/bin/bash";
+              execer = [ "cannot:${pkgs.python3.pkgs.brother-ql}/bin/brother_ql" ];
+            };
+          };
+        };
     };
 }

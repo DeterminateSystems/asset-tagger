@@ -27,6 +27,8 @@ logo=$(realpath logo-v2.svg)
 		-H 'Authorization: Bearer '"$NOTION_API_KEY"'' |
 		jq -r '.properties.Name.title[0].plain_text')
 
+    echo "Printing a label for $device_id -- $title"
+
 	qrcode --encode "https://www.notion.so/$1" >code.pbm
 	convert code.pbm -scale 1200% code.png
 
