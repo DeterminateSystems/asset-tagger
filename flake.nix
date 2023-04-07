@@ -54,12 +54,16 @@
                   qrcode
                   imagemagick
                   python3.pkgs.brother-ql
+                  "bin"
                 ];
               fix = {
                 "asset-label-print" = [ "${placeholder "out"}/bin/asset-label-print" ];
               };
               interpreter = "${pkgs.bash}/bin/bash";
-              execer = [ "cannot:${pkgs.python3.pkgs.brother-ql}/bin/brother_ql" ];
+              execer = [
+                "cannot:${pkgs.python3.pkgs.brother-ql}/bin/brother_ql"
+                "cannot:bin/asset-label-print"
+              ];
             };
           };
         };
